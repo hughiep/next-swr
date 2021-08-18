@@ -1,9 +1,9 @@
 import useSWR from "swr"
 
-const fetcher = () => fetch("https://randomfox.ca/floof/").then(res => res.json());
+export const fetcher = () => fetch("https://randomfox.ca/floof/").then(res => res.json());
 
-export function useAnimal () {
-  const { data, error } = useSWR(`/api/dogs`, fetcher)
+export function useAnimal (initData) {
+  const { data, error } = useSWR(`/api/dogs`, fetcher, initData);
 
   return {
     animal: data,

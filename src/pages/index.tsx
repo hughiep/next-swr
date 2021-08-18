@@ -1,12 +1,19 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useAnimal } from "src/libs/api/animal";
+import { fetcher, useAnimal } from "src/libs/api/animal";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
-  const { animal, isLoading, isError } = useAnimal();
+export async function getStaticProps() {
+  // `getStaticProps` is invoked on the server-side,
+  // so this `fetcher` function will be executed on the server-side.
+  const animal = await fetcher();
+  return { props: { animal } };
+}
 
-  if (isLoading) return <div className={styles.container}>Loading...</div>;
+export default function Home(props) {
+  const { animal, isLoading, isError } = useAnimal(props.animal);
+
+  if (!animal || isLoading) return <div className={styles.container}>Loading...</div>;
   if (isError) return <div className={styles.container}>Error</div>;
 
   return (
@@ -19,6 +26,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <Image
+          alt=""
           src={animal.image}
           width="1000"
           height="600"
